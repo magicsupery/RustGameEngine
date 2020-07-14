@@ -1,0 +1,12 @@
+[package]
+name = "untitled"
+version = "0.1.0"
+authors = ["chao.yang <chao.yang.phoenixstudio@puzzleplusgames.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+gfx = "0.17"
+gfx_window_glutin = "0.20"
+glutin = "0.12"
