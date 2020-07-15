@@ -14,8 +14,9 @@ pub struct Vector3<T>
 
 impl<T> Vector3<T>
     where
-        T: std::ops::Mul<T, Output = T>,
         T: std::ops::Add<T, Output = T>,
+        T: std::ops::Sub<T, Output = T>,
+        T: std::ops::Mul<T, Output = T>,
         T: std::ops::Div<T, Output = T>,
         T: num_traits::ToPrimitive + num_traits::FromPrimitive,
         T: Copy,
@@ -134,7 +135,7 @@ impl<T> std::ops::Mul<Vector3<T>> for Vector3<T>
     type Output = Vector3<T>;
 
     fn mul(self, rhs: Vector3<T>) -> Self::Output {
-        Vector3{x : self.x * rhs.x, y : self.y * rhs.y z : self.z * rhs.z}
+        Vector3{x : self.x * rhs.x, y : self.y * rhs.y, z : self.z * rhs.z}
     }
 }
 

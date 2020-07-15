@@ -13,8 +13,9 @@ pub struct Vector2<T>
 
 impl<T> Vector2<T>
     where
-        T: std::ops::Mul<T, Output = T>,
         T: std::ops::Add<T, Output = T>,
+        T: std::ops::Sub<T, Output = T>,
+        T: std::ops::Mul<T, Output = T>,
         T: std::ops::Div<T, Output = T>,
         T: num_traits::ToPrimitive + num_traits::FromPrimitive,
         T: Copy,
@@ -40,12 +41,12 @@ impl<T> Vector2<T>
 
     }
 
-    pub fn rotate(angle: f64) -> Self{
+    pub fn rotate(&self, angle: f64) -> Self{
         let radians = angle.to_radians();
-        let sin = radians.sin();
-        let cos = radians.cos();
+        let sin = num_traits::FromPrimitive::from_f64(radians.sin()).unwrap();
+        let cos = num_traits::FromPrimitive::from_f64(radians.cos()).unwrap();
 
-        Vector2{x: x * cos - y * sin, y: x * sin + y * cos}
+        Vector2{x: self.x * cos - self.y * sin, y: self.x * sin + self.y * cos}
     }
 }
 
