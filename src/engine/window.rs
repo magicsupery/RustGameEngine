@@ -3,6 +3,7 @@ extern crate glutin;
 extern crate gfx_window_glutin;
 
 use glutin::GlContext;
+use crate::engine;
 
 pub type ColorFormat = gfx::format::Srgba8;
 pub type DepthFormat = gfx::format::DepthStencil;
@@ -44,9 +45,13 @@ impl Window{
     pub fn render(&mut self){
         let running = &mut self.running;
         self.event_loop.poll_events(|event|{
+            //println!("event is {:?}", event);
             if let glutin::Event::WindowEvent {event, ..} = event{
                 match event {
                     glutin::WindowEvent::Closed =>*running = false,
+                    glutin::WindowEvent::KeyboardInput{device_id, input} =>{
+                        engine::input::Input::get_instance().borrow_mut().on_keyboard_event(input);
+                    },
                     _ => {}
                 }
             }

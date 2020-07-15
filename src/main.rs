@@ -1,15 +1,15 @@
 
-const DIMENTIONS: (u32, u32) = (800, 600);
-const TITLE: &str = "3D Game Engine";
-
 mod engine;
-
+use crate::engine::input;
 fn main() {
-    let mut window = engine::window::create_window(DIMENTIONS.0, DIMENTIONS.1, TITLE);
-    while window.running() {
-       window.render();
-    }
+    let mut vec = engine::vector2::Vector2::new(10.0, 20.0);
+    println!("{}, length {} ", vec, vec.length());
+    vec.normalize();
+    println!("{}", vec);
 
-    window.stop();
-
+    let vec2 = engine::vector2::Vector2::new(10.0, 20.0);
+    println!("{}", vec + vec2 + 3.0 - 2.0 - vec / vec2 / 3.0);
+    let mut game = engine::game::Game::new();
+    game.start();
+    game.run();
 }

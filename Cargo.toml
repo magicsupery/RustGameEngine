@@ -10,3 +10,6 @@ edition = "2018"
 gfx = "0.17"
 gfx_window_glutin = "0.20"
 glutin = "0.12"
+num = "0.3"
+num-traits = "0.2"
+
