@@ -1,67 +1,51 @@
-extern crate gfx;
-extern crate glutin;
-extern crate gfx_window_glutin;
 
-use glutin::GlContext;
 use crate::engine;
+use winit::{EventsLoop, WindowBuilder, Window, dpi::LogicalSize, CreationError, Event, WindowEvent};
 
-pub type ColorFormat = gfx::format::Srgba8;
-pub type DepthFormat = gfx::format::DepthStencil;
-
-pub struct Window{
-    event_loop :  glutin::EventsLoop,
-    window : glutin::GlWindow,
-    //device : Option<dyn Device>,
+pub struct GameWindow {
+    event_loop :  EventsLoop,
+    window : Window,
     running : bool,
 }
 
-pub fn create_window(width: u32, height: u32, title: &str) -> Window {
-    let window_builder = glutin::WindowBuilder::new()
-        .with_title(title)
-        .with_dimensions(width, height);
 
-    let context_builder = glutin::ContextBuilder::new()
-        .with_gl(glutin::GlRequest::Specific(glutin::Api::OpenGl, (3,2)))
-        .with_vsync(true);
-
-    let event_loop = glutin::EventsLoop::new();
-    let (win, _device, mut _factory, _color_view, mut _depth_view) =
-        gfx_window_glutin::init::<ColorFormat, DepthFormat>(
-            window_builder, context_builder, &event_loop);
-
-    let window = Window {
-        event_loop,
-        window: win,
-        //device: None,
-        running: true,
-    };
-
-    window
-
-}
+impl GameWindow {
+    pub fn new(width: f64, height: f64, title: &str) -> Result<Self, CreationError> {
+        let event_loop = EventsLoop::new();
+        let output = WindowBuilder::new()
+            .with_title(title)
+            .with_dimensions(LogicalSize{width, height})
+            .build(&event_loop);
 
 
-impl Window{
+        output.map(|window|Self{
+            event_loop,
+            window,
+            running: true,
+        })
+    }
+
     pub fn render(&mut self){
         let running = &mut self.running;
-        self.event_loop.poll_events(|event|{
-            //println!("event is {:?}", event);
-            if let glutin::Event::WindowEvent {event, ..} = event{
+        self.event_loop.poll_events(|event| match event
+        {
+            Event::WindowEvent {
+                window_id, event
+            } => {
                 match event {
-                    glutin::WindowEvent::Closed =>*running = false,
-                    glutin::WindowEvent::KeyboardInput{device_id, input} =>{
+                    WindowEvent::CloseRequested => {*running = false},
+                    WindowEvent::KeyboardInput{device_id, input} =>{
                         engine::input::Input::get_instance().borrow_mut().on_keyboard_event(input);
                     },
                     _ => {}
                 }
-            }
+            },
+            _ => {}
         });
 
     }
 
     pub fn stop(&self){
-        self.window.swap_buffers().unwrap();
-        //self.device.cleanup();
     }
 
     pub fn running(&self) -> bool{

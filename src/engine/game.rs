@@ -1,13 +1,13 @@
 use crate::engine::{window, time};
 
-const DIMENSIONS: (u32, u32) = (800, 600);
+const DIMENSIONS: (f64, f64) = (800.0, 600.0);
 const TITLE: &str = "3D Game Engine";
 
 const FRAME_CAP : f64 = 9999.0;
 const FRAME_TIME_LIMIT : f64 = 1.0 / FRAME_CAP;
 
 pub struct Game {
-    window: Option<window::Window>,
+    window: Option<window::GameWindow>,
     start: bool,
 }
 
@@ -20,10 +20,10 @@ impl Game {
         match self.start {
             true => {},
             false => {
-                self.start = true;
                 self.window = Some(
-                    window::create_window(DIMENSIONS.0, DIMENSIONS.1, TITLE));
-
+                    window::GameWindow::new(DIMENSIONS.0, DIMENSIONS.1, TITLE)
+                    .expect("Could not create game window"));
+                self.start = true;
             }
         }
 
@@ -77,7 +77,8 @@ impl Game {
     }
 
     fn stop(&self){
-        self.window.as_ref().unwrap().stop()
+        self.window.as_ref().unwrap().stop();
+        println!("game stopped")
     }
 
     fn running(&self) -> bool{

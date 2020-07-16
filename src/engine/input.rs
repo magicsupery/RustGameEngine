@@ -1,9 +1,7 @@
-extern crate glutin;
-
 use std::rc::Rc;
 use std::cell::RefCell;
 
-type KeyboardInput = glutin::KeyboardInput;
+type KeyboardInput = winit::KeyboardInput;
 type KeyboardEventCallback = fn(&KeyboardInput);
 
 pub struct Input{
@@ -23,13 +21,14 @@ impl Input {
       }
    }
    pub fn on_keyboard_event(&mut self, input :KeyboardInput){
+      println!("{:?}", input);
       match input.state{
-         glutin::ElementState::Pressed => {
+         winit::ElementState::Pressed => {
             for cb in self.key_pressed_callbacks.iter() {
                cb(&input);
             }
          },
-         glutin::ElementState::Released => {
+         winit::ElementState::Released => {
 
          },
       }

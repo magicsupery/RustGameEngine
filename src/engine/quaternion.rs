@@ -16,6 +16,7 @@ where
     T: std::ops::Sub<T, Output = T>,
     T: std::ops::Mul<T, Output = T>,
     T: std::ops::Div<T, Output = T>,
+    T: std::ops::Neg<Output = T>,
     T: num_traits::ToPrimitive + num_traits::FromPrimitive,
     T: Copy,
 {
@@ -46,9 +47,12 @@ where
 
 
 // mul method
-impl<T> std::ops::Mul<Quaternion<T>> for Quaternion<T>
+impl<T> std::ops::Mul<Vector3<T>> for Quaternion<T>
     where
+        T: std::ops::Add<T, Output = T>,
+        T: std::ops::Sub<T, Output = T>,
         T: std::ops::Mul<T, Output = T>,
+        T: std::ops::Neg<Output = T>,
         T: Copy
 
 {
@@ -66,8 +70,10 @@ impl<T> std::ops::Mul<Quaternion<T>> for Quaternion<T>
 
 impl<T> std::ops::Mul<Quaternion<T>> for Quaternion<T>
     where
+        T: std::ops::Add<T, Output = T>,
+        T: std::ops::Sub<T, Output = T>,
         T: std::ops::Mul<T, Output = T>,
-        T: Copy
+        T: Copy,
 
 {
     type Output = Quaternion<T>;
