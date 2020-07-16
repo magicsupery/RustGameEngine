@@ -1,5 +1,7 @@
 use num_traits::FromPrimitive;
 
+use crate::engine::vector3::Vector3;
+
 #[derive(Debug, Clone, Copy)]
 pub struct Quaternion<T>{
     pub x : T,
@@ -35,5 +37,45 @@ where
         self.z = self.z / l;
         self.w = self.w / l;
         self
+    }
+
+    pub fn conjugate(&self) -> Self{
+        Quaternion::new(-self.x, -self.y, -self.z, self.w)
+    }
+}
+
+
+// mul method
+impl<T> std::ops::Mul<Quaternion<T>> for Quaternion<T>
+    where
+        T: std::ops::Mul<T, Output = T>,
+        T: Copy
+
+{
+    type Output = Quaternion<T>;
+
+    fn mul(self, rhs: Vector3<T>) -> Self::Output {
+        Quaternion{
+            x : self.w * rhs.x + self.y * rhs.z - self.z * rhs.y,
+            y : self.w * rhs.y + self.z * rhs.x - self.x * rhs.z,
+            z : self.w * rhs.z + self.x * rhs.y - self.y * rhs.x,
+            w : -self.x * rhs.x - self.y * rhs.y - self.z * rhs.z,
+        }
+    }
+}
+
+impl<T> std::ops::Mul<Quaternion<T>> for Quaternion<T>
+    where
+        T: std::ops::Mul<T, Output = T>,
+        T: Copy
+
+{
+    type Output = Quaternion<T>;
+
+    fn mul(self, rhs: Quaternion<T>) -> Self::Output {
+        Quaternion{x : self.x * rhs.w + self.w * rhs.x + self.y * rhs.z - self.z * rhs.y,
+                   y : self.y * rhs.w + self.w * rhs.y + self.z * rhs.x - self.x * rhs.z,
+                   z : self.z * rhs.w + self.w * rhs.z + self.x * rhs.y - self.y * rhs.x,
+                   w : self.w * rhs.w - self.x * rhs.x - self.y * rhs.y - self.z * rhs.z}
     }
 }
