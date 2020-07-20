@@ -7,23 +7,25 @@ const FRAME_CAP : f64 = 9999.0;
 const FRAME_TIME_LIMIT : f64 = 1.0 / FRAME_CAP;
 
 pub struct Game {
-    window: Option<window::GameWindow>,
+    window: window::GameWindow,
     start: bool,
     running: bool,
 }
 
 impl Game {
     pub fn new() -> Game{
-        Game { window: None, start: false, running: false }
+        Game {
+            window: window::GameWindow::new(DIMENSIONS.0, DIMENSIONS.1, TITLE).
+                expect("expect GameWindow"),
+            start: false,
+            running: false
+        }
     }
 
     pub fn start(&mut self){
         match self.start {
             true => {},
             false => {
-                self.window = Some(
-                    window::GameWindow::new(DIMENSIONS.0, DIMENSIONS.1, TITLE)
-                    .expect("Could not create game window"));
                 self.start = true;
                 self.running = true;
             }
@@ -41,10 +43,9 @@ impl Game {
                 let mut frames = 0;
                 let mut frameCounter: u128 = 0;
 
-                let event_loop = &mut self.window.as_mut().unwrap().event_loop;
                 loop{
 
-                    let ended_result = self.window.as_mut().unwrap().event_loop();
+                    let ended_result = self.window.event_loop();
                     if ended_result {
                         break;
                     }
