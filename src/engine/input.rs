@@ -1,5 +1,6 @@
 use std::rc::Rc;
 use std::cell::RefCell;
+use winit::{EventsLoop, Event, WindowEvent};
 
 type KeyboardInput = winit::KeyboardInput;
 type KeyboardEventCallback = fn(&KeyboardInput);
@@ -20,6 +21,7 @@ impl Input {
          })
       }
    }
+
    pub fn on_keyboard_event(&mut self, input :KeyboardInput){
       println!("{:?}", input);
       match input.state{

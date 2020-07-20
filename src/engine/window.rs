@@ -3,9 +3,8 @@ use crate::engine;
 use winit::{EventsLoop, WindowBuilder, Window, dpi::LogicalSize, CreationError, Event, WindowEvent};
 
 pub struct GameWindow {
-    event_loop :  EventsLoop,
+    pub event_loop :  EventsLoop,
     window : Window,
-    running : bool,
 }
 
 
@@ -21,19 +20,18 @@ impl GameWindow {
         output.map(|window|Self{
             event_loop,
             window,
-            running: true,
         })
     }
 
-    pub fn render(&mut self){
-        let running = &mut self.running;
+    pub fn event_loop(&mut self) -> bool{
+        let mut end_result = false;
         self.event_loop.poll_events(|event| match event
         {
             Event::WindowEvent {
                 window_id, event
             } => {
                 match event {
-                    WindowEvent::CloseRequested => {*running = false},
+                    WindowEvent::CloseRequested => {end_result = true},
                     WindowEvent::KeyboardInput{device_id, input} =>{
                         engine::input::Input::get_instance().borrow_mut().on_keyboard_event(input);
                     },
@@ -43,13 +41,9 @@ impl GameWindow {
             _ => {}
         });
 
+        end_result
     }
-
     pub fn stop(&self){
-    }
-
-    pub fn running(&self) -> bool{
-        self.running
     }
 }
 

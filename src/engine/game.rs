@@ -1,4 +1,4 @@
-use crate::engine::{window, time};
+use crate::engine::{window, time, input};
 
 const DIMENSIONS: (f64, f64) = (800.0, 600.0);
 const TITLE: &str = "3D Game Engine";
@@ -9,11 +9,12 @@ const FRAME_TIME_LIMIT : f64 = 1.0 / FRAME_CAP;
 pub struct Game {
     window: Option<window::GameWindow>,
     start: bool,
+    running: bool,
 }
 
 impl Game {
     pub fn new() -> Game{
-        Game { window: None, start: false }
+        Game { window: None, start: false, running: false }
     }
 
     pub fn start(&mut self){
@@ -24,6 +25,7 @@ impl Game {
                     window::GameWindow::new(DIMENSIONS.0, DIMENSIONS.1, TITLE)
                     .expect("Could not create game window"));
                 self.start = true;
+                self.running = true;
             }
         }
 
@@ -38,7 +40,14 @@ impl Game {
 
                 let mut frames = 0;
                 let mut frameCounter: u128 = 0;
-                while self.running(){
+
+                let event_loop = &mut self.window.as_mut().unwrap().event_loop;
+                loop{
+
+                    let ended_result = self.window.as_mut().unwrap().event_loop();
+                    if ended_result {
+                        break;
+                    }
                     let start_time = time::now();
                     let passed_time = start_time - last_time;
                     last_time = start_time;
@@ -73,16 +82,11 @@ impl Game {
     }
 
     fn render(&mut self){
-        self.window.as_mut().unwrap().render();
     }
 
-    fn stop(&self){
-        self.window.as_ref().unwrap().stop();
+    fn stop(&mut self){
+        self.running = false;
         println!("game stopped")
-    }
-
-    fn running(&self) -> bool{
-        self.window.as_ref().unwrap().running()
     }
 
     fn update(&self){
