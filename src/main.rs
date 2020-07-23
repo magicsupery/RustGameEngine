@@ -1,7 +1,7 @@
 
 mod engine;
 use crate::engine::input;
-
+extern crate gfx_backend_vulkan as back;
 fn vec_test(){
     let mut vec = engine::vector2::Vector2::new(10.0, 20.0);
     println!("{}, length {} ", vec, vec.length());
@@ -21,9 +21,9 @@ fn matrix_test(){
 }
 
 fn main() {
-    vec_test();
-    matrix_test();
-    let mut game = engine::game::Game::new();
+    //vec_test();
+    //matrix_test();
+    let mut game = engine::game::Game::<back::Backend>::new();
     game.start();
     game.run();
 }
