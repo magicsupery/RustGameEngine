@@ -2,45 +2,26 @@ use crate::engine::{window, time, input, render};
 use gfx_hal::Instance;
 use std::mem::ManuallyDrop;
 
-extern crate gfx_backend_vulkan as back;
-
 const DIMENSIONS: (f64, f64) = (800.0, 600.0);
 const TITLE: &str = "3D Game Engine";
 
 const FRAME_CAP : f64 = 9999.0;
 const FRAME_TIME_LIMIT : f64 = 1.0 / FRAME_CAP;
 
-pub struct Game<B: gfx_hal::Backend> {
+pub struct Game {
     window: window::GameWindow,
-    render: render::Render<B>,
+    render: render::Render,
     start: bool,
     running: bool,
 }
 
-impl<B> Game<B>
-where
-    B: gfx_hal::Backend,
+impl Game
 {
-    pub fn new() -> Game<B>{
+    pub fn new() -> Game{
         let game_window = window::GameWindow::new(DIMENSIONS.0, DIMENSIONS.1, TITLE).
             expect("expect GameWindow");
 
-        let (instance, mut adapters, surface) = {
-            let instance =
-                B::Instance::create("GameEngine", 1).expect("Failed to create an instance!");
-            let surface = unsafe {
-                instance
-                    .create_surface(&game_window.window)
-                    .expect("Failed to create a surface!")
-            };
-            let adapters = instance.enumerate_adapters();
-            // Return `window` so it is not dropped: dropping it invalidates `surface`.
-            (Some(instance), adapters, surface)
-        };
-
-        let adapter = adapters.remove(0);
-
-        let render = render::Render::new(instance, surface, adapter);
+        let render = render::Render::new(&game_window.window);
 
         Game {
             window: game_window,
@@ -111,6 +92,7 @@ where
     }
 
     fn render(&mut self){
+        self.render.render();
     }
 
     fn stop(&mut self){
