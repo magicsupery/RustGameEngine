@@ -21,7 +21,7 @@ impl Game
         let game_window = window::GameWindow::new(DIMENSIONS.0, DIMENSIONS.1, TITLE).
             expect("expect GameWindow");
 
-        let render = render::Render::new(&game_window.window);
+        let render = render::Render::new(&game_window.window).expect("can not init render");
 
         Game {
             window: game_window,
@@ -97,7 +97,6 @@ impl Game
 
     fn stop(&mut self){
         self.running = false;
-        println!("game stopped")
     }
 
     fn update(&self){
